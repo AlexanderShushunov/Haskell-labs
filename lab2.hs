@@ -1,6 +1,7 @@
 module Lab2 where
 
 eval xs = foldl (\x y -> y + (10 * x)) 0 xs
+evalRev xs = foldr (\x y -> x + (10 * y)) 0 xs
 
 ------------------------------------------------------------------------------------------------------------------------------
 -- Lab 2: Validating Credit Card Numbers
@@ -11,7 +12,8 @@ eval xs = foldl (\x y -> y + (10 * x)) 0 xs
 -- ===================================
 
 toDigits :: Integer -> [Integer]
-toDigits x | x >= 0 && x < 10  = [x]
+toDigits x | x < 0 = error "input cannot be less than 0" 
+           | x >= 0 && x < 10  = [x]
            | otherwise         = toDigits (x `div` 10) ++ [x `rem` 10]
 
 -- ===================================
@@ -19,21 +21,23 @@ toDigits x | x >= 0 && x < 10  = [x]
 -- ===================================
 
 toDigitsRev :: Integer -> [Integer]
-toDigitsRev = undefined
+toDigitsRev x = reverse (toDigits x) 
 
 -- ===================================
 -- Ex. 2
 -- ===================================
 
 doubleSecond :: [Integer] -> [Integer]
-doubleSecond = undefined
+doubleSecond []     = []
+doubleSecond [x]    = [x]
+doubleSecond (x:xs) = x : head xs * 2 : doubleSecond (tail xs)
 
 -- ===================================
 -- Ex. 3
 -- ===================================
 
 sumDigits :: [Integer] -> Integer
-sumDigits = undefined
+sumDigits xs = sum (concat (map (\x -> toDigits x) xs))  
 
 
 -- ===================================
@@ -41,8 +45,7 @@ sumDigits = undefined
 -- ===================================
 
 isValid :: Integer -> Bool
-isValid = undefined
-
+isValid x = sumDigits (doubleSecond (toDigitsRev x)) `rem` 10 == 0
 
 -- ===================================
 -- Ex. 5
